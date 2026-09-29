@@ -1,0 +1,71 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --color-espresso: #241914;
+  --color-dark-coffee: #32231C;
+  --color-roasted-coffee: #4A3328;
+  --color-coffee: #6B4A36;
+  --color-caramel: #A97852;
+  --color-cream: #F3E7D5;
+  --color-ivory: #FAF6EF;
+  --color-forest: #18352B;
+  --color-terracotta: #9A5542;
+  --color-amber: #C58A4A;
+
+  --font-display: "Playfair Display", serif;
+  --font-body: "DM Sans", sans-serif;
+}
+
+:root {
+  font-family: var(--font-body);
+  color: var(--color-dark-coffee);
+  background: var(--color-ivory);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--color-ivory);
+  overflow-x: hidden;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+::selection {
+  color: var(--color-espresso);
+  background: var(--color-caramel);
+}
+
+section[id],
+footer[id] {
+  scroll-margin-top: 5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
