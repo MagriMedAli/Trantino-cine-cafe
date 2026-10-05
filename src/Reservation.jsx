@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
-
+import { supabase } from './lib/supabase.js'
 import { useLanguage } from './data/LanguageContext.jsx'
 import { translations } from './data/translation.js'
 import reservedImage from './assets/reserved.png'
@@ -11,10 +11,54 @@ function Reservation() {
   const reducedMotion = useReducedMotion()
 
   const [submitted, setSubmitted] = useState(false)
-
-  const handleSubmit = (event) => {
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+  
+  const handleSubmit = async (event) => {
     event.preventDefault()
-    setSubmitted(true)
+    setError('')
+
+    const form = event.currentTarget
+    if (!form.checkValidity()) {
+      form.reportValidity()
+      return
+    }
+
+    const formData = new FormData(form)
+    const people = formData.get('people')
+    const guests = people === '8+' ? 8 : Number(people)
+
+    if (!Number.isFinite(guests) || guests <= 0) {
+      setError(t.invalidGuests)
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const { error: insertError } = await supabase.from('reservations').insert({
+        name: formData.get('name'),
+        phone: formData.get('phone'),
+        reservation_date: formData.get('date'),
+        reservation_time: formData.get('time'),
+        guests,
+        message: formData.get('message'),
+        source: 'website',
+      })
+
+      if (insertError) {
+        console.error('Reservation insert failed:', insertError)
+        setError(t.error)
+        return
+      }
+
+      setSubmitted(true)
+    } catch (requestError) {
+      console.error('Reservation request failed:', requestError)
+      setError(t.error)
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -250,15 +294,22 @@ function Reservation() {
 
                 <button
                   type="submit"
+                  disabled={loading}
                   className="group inline-flex shrink-0 items-center justify-center gap-4 bg-caramel px-7 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-espresso transition-all duration-300 hover:-translate-y-1 hover:bg-amber"
                 >
-                  {t.submit}
+                  {loading ? t.loading : t.submit}
 
                   <span className="transition-transform duration-300 group-hover:translate-x-1">
                     →
                   </span>
                 </button>
               </div>
+
+              {error && (
+                <p role="alert" className="text-xs text-red-300 md:col-span-2">
+                  {error}
+                </p>
+              )}
             </form>
           ) : (
             <motion.div

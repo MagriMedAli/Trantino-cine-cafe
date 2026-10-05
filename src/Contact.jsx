@@ -81,86 +81,43 @@ function Contact() {
 
           <motion.div {...reveal(26, 0.16)} className="mt-20 h-px origin-left bg-cream/15" />
 
-          <div className="grid gap-10 py-10 sm:grid-cols-3 sm:gap-8 sm:py-12">
-            <motion.div {...reveal(20, 0.2)}>
-              <p className="text-[9px] uppercase tracking-[0.3em] text-caramel">
-                {t.addressLabel}
-              </p>
-              <p className="mt-4 max-w-[16rem] text-sm leading-7 text-cream/75">
-                {t.address}
-                <br />
-                {t.city}
-              </p>
-            </motion.div>
-
-            <motion.div {...reveal(20, 0.28)}>
-              <p className="text-[9px] uppercase tracking-[0.3em] text-caramel">
-                {t.phoneLabel}
-              </p>
-              <a
-                href={phoneHref}
-                className="mt-4 inline-block text-sm text-cream/75 transition-colors hover:text-caramel focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-caramel"
-              >
-                {t.phone}
+          <div className="grid gap-px overflow-hidden border border-cream/10 bg-cream/10 sm:grid-cols-2 lg:grid-cols-4">
+            <motion.div {...reveal(20, 0.2)} className="flex flex-col items-center bg-espresso/80 p-6 text-center sm:p-7">
+              <span className="flex h-9 w-9 items-center justify-center border border-caramel/50 font-display text-lg text-caramel" aria-hidden="true">⌖</span>
+              <p className="mt-7 text-[9px] uppercase tracking-[0.3em] text-caramel">{t.addressLabel}</p>
+              <a href="https://maps.app.goo.gl/LPjUZSRkFFRGvpm1A" target="_blank" rel="noreferrer" className="mt-3 text-sm leading-7 text-cream/75 transition-colors hover:text-caramel focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-caramel">
+                {t.address}<br />{t.city}
               </a>
             </motion.div>
 
-            <motion.div {...reveal(20, 0.36)}>
-              <p className="text-[9px] uppercase tracking-[0.3em] text-caramel">
-                {t.opening}
-              </p>
-              <p className="mt-4 text-sm text-cream/75">{t.hours}</p>
+            <motion.div {...reveal(20, 0.26)} className="flex flex-col items-center bg-espresso/80 p-6 text-center sm:p-7">
+              <span className="flex h-9 w-9 items-center justify-center border border-caramel/50 font-display text-lg text-caramel" aria-hidden="true">✆</span>
+              <p className="mt-7 text-[9px] uppercase tracking-[0.3em] text-caramel">{t.phoneLabel}</p>
+              <a href={phoneHref} className="mt-3 inline-block text-sm text-cream/75 transition-colors hover:text-caramel focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-caramel">{t.phone}</a>
+            </motion.div>
+
+            <motion.div {...reveal(20, 0.32)} className="flex flex-col items-center bg-espresso/80 p-6 text-center sm:p-7">
+              <span className="flex h-9 w-9 items-center justify-center border border-caramel/50 font-semibold text-lg text-caramel" aria-hidden="true">f</span>
+              <p className="mt-7 text-[9px] uppercase tracking-[0.3em] text-caramel">{t.facebook}</p>
+              <a href="https://www.facebook.com/Tarantinomonastir" target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-2 text-sm text-cream/75 transition-colors hover:text-caramel focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-caramel">{t.follow}<span aria-hidden="true">↗</span></a>
+            </motion.div>
+
+            <motion.div {...reveal(20, 0.38)} className="flex flex-col items-center bg-espresso/80 p-6 text-center sm:p-7">
+              <span className="flex h-9 w-9 items-center justify-center border border-caramel/50 font-display text-lg text-caramel" aria-hidden="true">◎</span>
+              <p className="mt-7 text-[9px] uppercase tracking-[0.3em] text-caramel">{t.instagram}</p>
+              <a href="https://www.instagram.com/tarantino.monastir/" target="_blank" rel="noreferrer" className="mt-3 inline-flex items-center gap-2 text-sm text-cream/75 transition-colors hover:text-caramel focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-caramel">{t.follow}<span aria-hidden="true">↗</span></a>
             </motion.div>
           </div>
 
-          <motion.div
-            {...reveal(18, 0.42)}
-            className="mt-2 border-t border-cream/10 pt-10 sm:pt-12"
-          >
-            <div className="grid gap-12 lg:grid-cols-[1fr_auto] lg:items-end lg:gap-20">
-              <div className="flex flex-col items-start gap-5">
-                <a
-                  href="https://maps.app.goo.gl/LPjUZSRkFFRGvpm1A"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group inline-flex min-h-11 items-center gap-3 text-sm uppercase tracking-[0.2em] text-cream transition-colors hover:text-caramel focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-caramel"
-                >
-                  <span className="border-b border-cream/25 pb-1 transition-colors group-hover:border-caramel">
-                    {t.directions}
-                  </span>
-                  <span className="text-base transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1 group-hover:-translate-y-1">
-                    ↗
-                  </span>
-                </a>
-
-                <a
-                  href={phoneHref}
-                  className="group inline-flex min-h-11 items-center gap-3 text-sm uppercase tracking-[0.2em] text-cream transition-colors hover:text-caramel focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-caramel"
-                >
-                  <span className="border-b border-cream/25 pb-1 transition-colors group-hover:border-caramel">
-                    {t.call}
-                  </span>
-                  <span className="text-base transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1 group-hover:-translate-y-1">
-                    ↗
-                  </span>
-                </a>
-              </div>
-
-              <div className="border-t border-caramel/40 pt-6 lg:min-w-[22rem] lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
-                <p className="mb-4 text-[9px] uppercase tracking-[0.3em] text-caramel">
-                  {t.nextScene}
-                </p>
-
-                <a
-                  href="#reservation"
-                  className="group inline-flex min-h-12 items-center gap-4 font-display text-3xl text-cream transition-colors hover:text-caramel sm:text-4xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-caramel"
-                >
-                  <span>{t.reserve}</span>
-                  <span className="font-sans text-xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-2">
-                    →
-                  </span>
-                </a>
-              </div>
+          <motion.div {...reveal(18, 0.42)} className="mt-px grid gap-6 border border-caramel/35 bg-caramel/10 p-6 sm:grid-cols-[1fr_auto] sm:items-center sm:p-8">
+            <div>
+              <p className="text-[9px] uppercase tracking-[0.35em] text-caramel">{t.opening}</p>
+              <p className="mt-3 font-display text-2xl text-cream sm:text-3xl">{t.everyDay}</p>
+            </div>
+            <div className="flex items-end gap-5 sm:gap-8">
+              <div><p className="text-[9px] uppercase tracking-[0.2em] text-cream/45">{t.opens}</p><p className="mt-1 font-display text-3xl text-cream sm:text-4xl">07:30</p></div>
+              <span className="mb-2 h-px w-8 bg-caramel/60" aria-hidden="true" />
+              <div><p className="text-[9px] uppercase tracking-[0.2em] text-cream/45">{t.closes}</p><p className="mt-1 font-display text-3xl text-cream sm:text-4xl">00:00</p></div>
             </div>
           </motion.div>
 
@@ -218,13 +175,13 @@ function Contact() {
               </div>
             </nav>
 
-            <div className="mt-12 flex flex-col items-center border-t border-cream/10 pt-10 text-center sm:pt-14">
-              <p className="text-[9px] uppercase tracking-[0.32em] text-cream/75">
+            <div className="mt-12 flex flex-col items-center border border-caramel/35 bg-caramel/10 p-6 text-center sm:mt-14 sm:p-8">
+              <p className="text-[9px] uppercase tracking-[0.32em] text-caramel">
                 {t.nextScene}
               </p>
               <a
                 href="#reservation"
-                className="group mt-4 inline-flex min-h-12 items-center gap-4 font-display text-3xl text-cream transition-colors hover:text-caramel sm:text-4xl focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-caramel"
+                className="group mt-5 inline-flex min-h-12 items-center gap-5 border border-caramel bg-caramel px-6 py-3 font-display text-2xl text-espresso transition-colors hover:bg-amber focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-caramel sm:text-3xl"
               >
                 <span>{nav.reserve}</span>
                 <span className="text-xl transition-transform duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-2">

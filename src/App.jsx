@@ -9,22 +9,29 @@ import { LanguageProvider } from './data/LanguageContext.jsx'
 import Reservation from './Reservation.jsx'
 import Contact from './Contact.jsx'
 import PageProgress from './PageProgress.jsx'
+import Admin from './Admin.jsx'
+import TarantinoAIChat from './components/TarantinoAIChat.jsx'
 
 function App() {
+  const isAdminRoute = window.location.pathname === '/admin' || window.location.pathname.startsWith('/admin/')
+
   return (
     <LanguageProvider>
-      <PageProgress />
-      <main>
-        <Navbar />
-        <Hero />
-        <Intro />
-        <Menu />
-        <Experience />
-        <Gallery />
-        <Events />
-        <Reservation />
-        <Contact />
-      </main>
+      {isAdminRoute ? <Admin /> : <>
+        <PageProgress />
+        <main>
+          <Navbar />
+          <Hero />
+          <Intro />
+          <Menu />
+          <Experience />
+          <Gallery />
+          <Events />
+          <Reservation />
+          <Contact />
+        </main>
+        <TarantinoAIChat />
+      </>}
     </LanguageProvider>
   )
 }
