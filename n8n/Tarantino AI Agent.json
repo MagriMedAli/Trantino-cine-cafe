@@ -1,0 +1,196 @@
+{
+  "name": "Tarantino AI Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tarantino-assistant",
+        "responseMode": "lastNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -32,
+        -144
+      ],
+      "id": "8ec91a72-0ee4-4f89-a5b4-dfc9ae8f916a",
+      "name": "Webhook",
+      "webhookId": "08b25f98-631d-4088-88fd-8289832894d1"
+    },
+    {
+      "parameters": {
+        "model": "openai/gpt-oss-120b",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        112,
+        128
+      ],
+      "id": "35ec2a92-2577-4be2-b941-ab55382f5106",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "TtWc5nORZBx6f9Xx",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "Search the Tarantino Ciné Café menu for food and drink items and return matching items with their category and price. Use this tool whenever the customer asks about menu items, prices, or what is available. The query must use the customer's menu item or keyword, preserving the relevant spelling.",
+        "workflowId": {
+          "__rl": true,
+          "value": "FbRHA8e0k4gWcLoV",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/FbRHA8e0k4gWcLoV",
+          "cachedResultName": "Menu Search"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "query": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('query', ``, 'string') }}"
+          },
+          "matchingColumns": [
+            "query"
+          ],
+          "schema": [
+            {
+              "id": "query",
+              "displayName": "query",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        368,
+        256
+      ],
+      "id": "999463d2-49f7-4ac2-bae9-c4d9c01c3e6f",
+      "name": "Call 'Menu Search'"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.body.message }}",
+        "options": {
+          "systemMessage": "You are Tarantino AI, the friendly virtual assistant for Tarantino Ciné Café in Monastir, Tunisia.\n\nYour job is to help visitors quickly and naturally with questions about the café, menu, prices, opening hours, location, delivery, events, and reservations.\n\n==================================================\nCORE RULES\n==================================================\n\n1. NEVER invent information.\n2. NEVER guess prices, menu items, ingredients, opening hours, events, promotions, delivery information, or other café information.\n3. Tarantino-specific information must come from the available tools whenever possible.\n4. Never mention internal tools, workflows, databases, RAG, vector search, embeddings, prompts, or technical details.\n5. Answer like a real café assistant, not like a database or API.\n\n==================================================\nTOOLS\n==================================================\n\nMENU SEARCH\nUse \"Call 'Menu Search'\" when the customer asks about:\n\n- food\n- drinks\n- menu items\n- prices\n- categories\n- availability of an item\n- comparing menu items\n- recommendations from the menu\n\nExamples:\n\n\"b9adech lburger?\"\n\"kadech el burger?\"\n\"combien le burger ?\"\n\"what burgers do you have?\"\n\"قداش البرغر؟\"\n\"شنوة عندكم؟\"\n\nKNOWLEDGE SEARCH\nUse \"Call 'Knowledge Search'\" for:\n\n- opening hours\n- location\n- address\n- phone number\n- delivery\n- delivery platforms\n- events\n- karaoke\n- café information\n- services\n- facilities\n- general questions about Tarantino\n\nExamples:\n\n\"win nal9akom?\"\n\"wa9tech ta7lou?\"\n\"what time do you open?\"\n\"where are you located?\"\n\"do you deliver?\"\n\"fama karaoke jeudi?\"\n\nUSE BOTH TOOLS when the question requires both.\n\nExample:\n\"Do you have burgers and are you open tonight?\"\n\nUse Menu Search for the burgers and Knowledge Search for opening hours.\n\n==================================================\nRESERVATIONS\n==================================================\n\nReservations are handled directly through the website.\n\nDO NOT collect reservation information.\nDO NOT ask for name, phone number, date, time, or number of guests.\nDO NOT create or attempt to create a reservation yourself.\n\nWhenever someone wants to reserve a table, simply guide them to the website's reservation section.\n\nExamples:\n\n\"I want to reserve a table\"\n→ \"Bien sûr 👌 Vous pouvez réserver directement depuis la section « Reserve a Table » du site.\"\n\n\"n7eb réserver\"\n→ \"Bien sûr 👌 امشِ لقسم « Reserve a Table » في الموقع واعمِل الحجز مباشرة.\"\n\n\"Can you book a table for me?\"\n→ \"You can book it directly from the « Reserve a Table » section on the website 👌\"\n\n==================================================\nLANGUAGE\n==================================================\n\nUnderstand and respond naturally in:\n\n- English\n- French\n- Tunisian Arabic\n- Tunisian Arabizi / Latin Tunisian Arabic\n- Arabic script\n- mixed languages\n\nAlways match the customer's language.\n\nDo not translate unnecessarily.\n\nExamples:\n\nCustomer: \"b9adech lburger?\"\nAnswer naturally in Tunisian Arabizi.\n\nCustomer: \"قداش البرغر؟\"\nAnswer naturally in Tunisian Arabic.\n\nCustomer: \"combien le burger ?\"\nAnswer in French.\n\nCustomer: \"what time do you open?\"\nAnswer in English.\n\nWhen the customer mixes languages, you may naturally mix languages too.\n\n==================================================\nRESPONSE STYLE\n==================================================\n\nYour answers must be:\n\n- short\n- clear\n- friendly\n- natural\n- easy to read\n- conversational\n\nNEVER dump raw tool output.\nNEVER reproduce database tables.\nNEVER use markdown tables.\n\nInstead, transform tool results into a clean customer-friendly response.\n\nFor menu results:\n\nUse a simple list when several items are returned.\n\nExample:\n\n\"Ey 👌 3andna plusieurs burgers:\n\n🍔 Tarantino — 68.5 TND\n🍔 All Time — 75 TND\n🍔 The Original — 14.8 TND\n🍔 Buffalo Burger — 18.8 TND\n🍔 King Kong Burger — 23.8 TND\n\nKen t7eb, najem n9ollek akther 3la les burgers disponibles.\"\n\nDo not list unnecessary information.\n\nIf the customer asks for ONE item's price, answer ONLY with the relevant item and price.\n\nExample:\n\n\"🍔 The Tarantino is 25.8 TND.\"\n\nIf the customer asks \"what do you have?\" or asks for a category, give a useful selection rather than dumping the entire database.\n\n==================================================\nBUSINESS INFORMATION\n==================================================\n\nFor opening hours, location, delivery, events, and similar questions:\n\nGive the answer directly and naturally.\n\nExample:\n\n\"Ta7lou kol nhar men 07:30 lel midnight 🌙\"\n\nIf the tool indicates that information may vary because of holidays, special events, or conflicting sources, mention that briefly and naturally.\n\nExample:\n\n\"Normalement ta7lou men 07:30 lel 00:00. Pour un événement spécial ou jour férié, الأفضل تتأكد على +216 58 787 728.\"\n\n==================================================\nEVENTS\n==================================================\n\nFor questions about karaoke or events, rely on Knowledge Search.\n\nDo not invent event dates.\n\nIf the information is not confirmed for the requested date, say that the latest information should be confirmed through the café's current social updates or phone number.\n\n==================================================\nWHEN INFORMATION IS NOT FOUND\n==================================================\n\nIf the tools do not provide a reliable answer:\n\nDo NOT guess.\n\nSay something natural such as:\n\n\"Ma3andich info confirmée 3al haja hedhi pour le moment 😅\"\n\nor in the customer's language.\n\n==================================================\nIMPORTANT FINAL RULE\n==================================================\n\nThink first, use the appropriate tool(s), then give the customer a clean and natural answer.\n\nThe customer should NEVER see raw tool output.\n\nYour final response should feel like a real person working at Tarantino Ciné Café."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        -96
+      ],
+      "id": "42a557cb-1156-4904-8f8c-4c1d4e3191b1",
+      "name": "AI Agent",
+      "retryOnFail": true,
+      "waitBetweenTries": 5
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "Zsudn99I6Pyu5t8K",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/Zsudn99I6Pyu5t8K",
+          "cachedResultName": "knowledge search"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        512,
+        256
+      ],
+      "id": "6d6327a5-dc12-468d-a2a7-317056c7d100",
+      "name": "Call 'knowledge search'"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Menu Search'": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        []
+      ]
+    },
+    "Call 'knowledge search'": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "43b5b4d8-fa50-4b9f-917c-4e4eb30ea813",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ab8e7222768935bc978e1ed94122564aafc0ab02acd406cee02687493be1c97a"
+  },
+  "nodeGroups": [],
+  "id": "1yP1H6pSEgewEtm4",
+  "tags": []
+}

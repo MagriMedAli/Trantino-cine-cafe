@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import heroImage from './assets/hero.png'
+import storefrontImage from './assets/cafe-1.webp'
 import { useLanguage } from './data/LanguageContext.jsx'
 import { translations } from './data/translation.js'
 
@@ -60,7 +60,7 @@ function Intro() {
                 delay: 0.15,
                 duration: 0.8,
               }}
-              className="mt-9 max-w-md text-sm leading-8 text-dark-coffee/70 sm:text-base"
+              className="mt-9 max-w-md text-sm leading-8 text-dark-coffee/80 sm:text-base"
             >
               {t.description}
             </motion.p>
@@ -107,8 +107,10 @@ function Intro() {
           >
             <div className="relative overflow-hidden rounded-sm">
               <motion.img
-                src={heroImage}
-                alt="Tarantino Ciné Café interior"
+                src={storefrontImage}
+                alt="Tarantino Ciné Café storefront at night"
+                loading="lazy"
+                decoding="async"
                 initial={{ clipPath: 'inset(0 0 100% 0)', scale: 1.05 }}
                 whileInView={{ clipPath: 'inset(0 0 0% 0)', scale: 1 }}
                 whileHover={{ scale: 1.03 }}
@@ -132,7 +134,7 @@ function Intro() {
                 {t.brand}
               </span>
 
-              <span className="text-[9px] uppercase tracking-[0.3em] text-coffee/60">
+              <span className="text-[9px] uppercase tracking-[0.3em] text-coffee">
                 {t.location}
               </span>
             </div>

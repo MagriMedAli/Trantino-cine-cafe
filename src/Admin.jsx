@@ -247,4 +247,11 @@ function Admin() {
   return <AdminDashboard user={session.user} copy={copy} language={language} onLogout={logout} />
 }
 
-export default Admin
+function AdminGate() {
+  if (!supabase) {
+    return <main className="flex min-h-screen items-center justify-center bg-espresso px-6 text-center text-sm text-cream">Supabase is not configured.</main>
+  }
+  return <Admin />
+}
+
+export default AdminGate

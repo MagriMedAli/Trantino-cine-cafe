@@ -67,7 +67,7 @@ function Menu() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, amount: 0.3 }}
             transition={{ delay: 0.15, duration: 0.8 }}
-            className="mt-7 max-w-xl text-sm leading-8 text-cream/60 sm:text-base"
+            className="mt-7 max-w-xl text-sm leading-8 text-cream/75 sm:text-base"
           >
             {t.description}
           </motion.p>
@@ -76,7 +76,7 @@ function Menu() {
         {/* Main sections */}
         <div className="mt-20">
 
-          <p className="mb-6 text-[9px] uppercase tracking-[0.3em] text-cream/40">
+          <p className="mb-6 text-[9px] uppercase tracking-[0.3em] text-cream/65">
             {t.choose}
           </p>
 
@@ -88,6 +88,7 @@ function Menu() {
                 <button
                   key={section.id}
                   type="button"
+                  aria-pressed={isActive}
                   onClick={() => handleSectionChange(section)}
                   className={`group relative min-h-28 overflow-hidden px-5 py-6 text-left transition-all duration-500 sm:min-h-32 sm:px-7 ${
                     isActive
@@ -126,7 +127,7 @@ function Menu() {
           transition={{ duration: 0.5 }}
           className="mt-12"
         >
-          <div className="flex gap-3 overflow-x-auto pb-3 scrollbar-hide">
+          <div className="scrollbar-hide -mx-6 flex gap-3 overflow-x-auto px-6 pb-3 lg:mx-0 lg:flex-wrap lg:px-0">
             {currentSection.subcategories.map((category) => {
               const isActive = category.id === activeCategory
 
@@ -134,11 +135,12 @@ function Menu() {
                 <button
                   key={category.id}
                   type="button"
+                  aria-pressed={isActive}
                   onClick={() => setActiveCategory(category.id)}
                   className={`shrink-0 border px-4 py-2.5 text-[10px] uppercase tracking-[0.18em] transition-all duration-300 ${
                     isActive
                       ? 'border-caramel bg-caramel text-espresso'
-                      : 'border-cream/15 text-cream/60 hover:border-caramel/60 hover:text-caramel'
+                      : 'border-cream/15 text-cream/75 hover:border-caramel/60 hover:text-caramel'
                   }`}
                 >
                   {category.name[language]}
@@ -182,7 +184,7 @@ function Menu() {
                       </h3>
 
                       {item.description && (
-                        <p className="mt-2 max-w-md text-xs leading-6 text-cream/45">
+                        <p className="mt-2 max-w-md text-xs leading-6 text-cream/70">
                           {item.description}
                         </p>
                       )}
@@ -190,10 +192,10 @@ function Menu() {
 
                     <div className="shrink-0 text-right">
                       <span className="font-display text-xl text-caramel sm:text-2xl">
-                        {item.price.toFixed(1)}
+                        {item.price.toFixed(3)}
                       </span>
 
-                      <span className="ml-1 text-[9px] uppercase tracking-[0.15em] text-cream/40">
+                      <span className="ml-1.5 text-[10px] uppercase tracking-[0.15em] text-cream/65">
                         {t.price}
                       </span>
                     </div>
@@ -204,7 +206,7 @@ function Menu() {
               ))}
 
               {visibleItems.length === 0 && (
-                <div className="py-16 text-sm text-cream/40">
+                <div className="py-16 text-sm text-cream/65">
                   {t.empty}
                 </div>
               )}
@@ -217,7 +219,7 @@ function Menu() {
         <div className="mt-20 flex items-center gap-4">
           <span className="h-px w-12 bg-caramel/50" />
 
-          <span className="text-[9px] uppercase tracking-[0.3em] text-cream/30">
+          <span className="text-[9px] uppercase tracking-[0.3em] text-cream/55">
             {t.scene} · {t.end}
           </span>
         </div>

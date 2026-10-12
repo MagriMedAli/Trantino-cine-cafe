@@ -2,7 +2,7 @@ import { motion } from 'framer-motion'
 import { useLanguage } from './data/LanguageContext.jsx'
 import { translations } from './data/translation.js'
 import { events } from './data/event.js'
-import karaokeImage from './assets/karoke.png'
+import karaokeImage from './assets/karoke.webp'
 
 function Events() {
   const { language } = useLanguage()
@@ -15,9 +15,14 @@ function Events() {
     >
       <img
         src={karaokeImage}
-        alt="Karaoke night at Tarantino Ciné Café"
+        alt=""
+        aria-hidden="true"
+        loading="lazy"
+        decoding="async"
         className="absolute inset-0 h-full w-full object-cover"
       />
+      <div className="absolute inset-0 bg-espresso/70" />
+      <div className="absolute inset-0 bg-gradient-to-b from-espresso/40 via-transparent to-espresso/60" />
 
       <div className="relative z-10 mx-auto max-w-7xl px-6 lg:px-10">
 
@@ -37,7 +42,7 @@ function Events() {
             </span>
           </div>
 
-          <p className="text-xs uppercase tracking-[0.3em] text-cream/40">
+          <p className="text-xs uppercase tracking-[0.3em] text-cream/65">
             {t.label}
           </p>
 
@@ -47,7 +52,7 @@ function Events() {
             <span className="text-caramel">{t.titleAccent}</span>
           </h2>
 
-          <p className="mt-7 max-w-xl text-sm leading-8 text-cream/60 sm:text-base">
+          <p className="mt-7 max-w-xl text-sm leading-8 text-cream/75 sm:text-base">
             {t.description}
           </p>
         </motion.div>
@@ -82,7 +87,7 @@ function Events() {
                     {event.date.day[language]}
                   </span>
 
-                  <span className="mt-4 text-[10px] uppercase tracking-[0.3em] text-cream/40">
+                  <span className="mt-4 text-[10px] uppercase tracking-[0.3em] text-cream/65">
                     {t.recurring}
                   </span>
 
@@ -100,7 +105,7 @@ function Events() {
                         {t.recurring}
                       </span>
 
-                      <span className="text-[9px] uppercase tracking-[0.3em] text-cream/25">
+                      <span className="text-[9px] uppercase tracking-[0.3em] text-cream/50">
                         {t.take}
                       </span>
                     </div>
@@ -109,7 +114,7 @@ function Events() {
                       {event.title[language]}
                     </h3>
 
-                    <p className="mt-7 max-w-xl text-sm leading-8 text-cream/55 sm:text-base">
+                    <p className="mt-7 max-w-xl text-sm leading-8 text-cream/75 sm:text-base">
                       {event.description[language]}
                     </p>
                   </div>
@@ -120,14 +125,14 @@ function Events() {
                     <div className="flex items-center gap-4">
                       <span className="h-px w-10 bg-caramel" />
 
-                      <span className="text-[9px] uppercase tracking-[0.3em] text-cream/40">
+                      <span className="text-[9px] uppercase tracking-[0.3em] text-cream/65">
                         {t.brandLine}
                       </span>
                     </div>
 
                     <a
                       href="#reservation"
-                      className="inline-flex items-center justify-center gap-4 bg-caramel px-6 py-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-espresso transition-all duration-300 hover:-translate-y-1 hover:bg-amber"
+                      className="inline-flex items-center justify-center gap-4 bg-caramel px-6 py-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-espresso transition-all duration-300 hover:-translate-y-1 hover:bg-amber focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-caramel"
                     >
                       {event.cta[language]}
 

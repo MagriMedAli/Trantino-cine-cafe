@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import heroImage from './assets/hero.png'
+import heroImage from './assets/hero.webp'
 import { useLanguage } from './data/LanguageContext.jsx'
 import { translations } from './data/translation.js'
 
@@ -16,6 +16,7 @@ function Hero() {
       <motion.img
         src={heroImage}
         alt="Interior of Tarantino Ciné Café"
+        fetchPriority="high"
         initial={{ scale: 1.08 }}
         animate={{ scale: 1 }}
         transition={{
@@ -159,7 +160,7 @@ function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.4, duration: 1 }}
-        className="absolute bottom-8 left-6 flex items-center gap-4 text-[10px] uppercase tracking-[0.3em] text-cream/50 lg:left-10"
+        className="absolute bottom-8 left-6 flex items-center gap-4 text-[10px] uppercase tracking-[0.3em] text-cream/70 lg:left-10"
       >
         <span className="h-px w-10 bg-caramel/70" />
         {t.scene}

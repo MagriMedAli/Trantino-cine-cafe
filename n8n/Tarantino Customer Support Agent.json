@@ -1,0 +1,293 @@
+{
+  "name": "Tarantino Customer Support Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tarantino-ai-agent",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "2f51d52d-78ef-46fb-ac68-7e0f898261b6",
+      "name": "Chat Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -384,
+        416
+      ],
+      "webhookId": "tarantino-ai-agent"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body ?? $json;\nconst message = typeof body.message === 'string' ? body.message.trim() : '';\nconst language = body.language === 'fr' ? 'fr' : 'en';\nconst conversationId = typeof body.conversationId === 'string' ? body.conversationId : null;\n\nreturn [{\n  json: {\n    valid: message.length > 0,\n    message: message.slice(0, 2000),\n    language,\n    conversationId,\n    error: message.length > 0 ? null : (language === 'fr' ? 'Veuillez saisir un message.' : 'Please enter a message.')\n  }\n}];"
+      },
+      "id": "0f46b367-6718-4bf9-ab02-6954aee8b36a",
+      "name": "Normalize Chat Input",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -144,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "valid-message",
+              "leftValue": "={{ $json.valid }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "6b271e54-7cab-4923-b9ff-bb7b044e5747",
+      "name": "Message Provided?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        96,
+        416
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.x.ai/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Authorization",
+              "value": "={{ 'Bearer ' + $env.XAI_API_KEY }}"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: 'grok-3-mini', temperature: 0.2, max_tokens: 500, messages: [{ role: 'system', content: $json.language === 'fr' ? 'Tu es l’assistant du Tarantino Ciné Café à Monastir. Réponds en français, de façon chaleureuse, concise et précise. Tu peux répondre sur les horaires, l’adresse, le menu, les événements et les réservations. Ne prétends jamais avoir confirmé une réservation. Pour réserver, invite le client à utiliser le formulaire du site ou à appeler le café. Si une information manque, dis-le clairement.' : 'You are the customer support assistant for Tarantino Ciné Café in Monastir. Reply in English, warmly, concisely, and accurately. You can answer about opening hours, location, menu, events, and reservations. Never claim that a reservation has been confirmed. For booking, direct the customer to the website form or to call the café. If information is unavailable, say so clearly.' }, { role: 'user', content: $json.message }] }) }}",
+        "options": {
+          "timeout": 30000
+        }
+      },
+      "id": "bd29b0d2-2126-41e0-b4df-31c11bc4642e",
+      "name": "Ask Grok",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        336,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const content = $json.choices?.[0]?.message?.content;\n\nreturn [{\n  json: {\n    ok: Boolean(content),\n    reply: content || 'I could not prepare a response right now. Please call Tarantino Ciné Café directly.',\n    conversationId: $('Normalize Chat Input').first().json.conversationId\n  }\n}];"
+      },
+      "id": "468528cc-9716-4585-87fc-c236affa510f",
+      "name": "Format Agent Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        576,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "invalid-reply",
+              "name": "reply",
+              "value": "={{ $json.error }}",
+              "type": "string"
+            },
+            {
+              "id": "invalid-ok",
+              "name": "ok",
+              "value": false,
+              "type": "boolean"
+            },
+            {
+              "id": "invalid-conversation",
+              "name": "conversationId",
+              "value": "={{ $json.conversationId }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "085adac5-b124-4f6f-99d1-484387c064cf",
+      "name": "Build Input Error",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        336,
+        544
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      },
+      "id": "43f84876-da31-4511-a0d8-d3ec1490a11c",
+      "name": "Return Agent Reply",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        816,
+        336
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              },
+              {
+                "name": "Access-Control-Allow-Headers",
+                "value": "Content-Type"
+              }
+            ]
+          }
+        }
+      },
+      "id": "de863ca6-715f-4576-9714-dfdd008eb298",
+      "name": "Return Input Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        576,
+        544
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Chat Webhook": {
+      "main": [
+        [
+          {
+            "node": "Normalize Chat Input",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Normalize Chat Input": {
+      "main": [
+        [
+          {
+            "node": "Message Provided?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message Provided?": {
+      "main": [
+        [
+          {
+            "node": "Ask Grok",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Build Input Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ask Grok": {
+      "main": [
+        [
+          {
+            "node": "Format Agent Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Agent Reply": {
+      "main": [
+        [
+          {
+            "node": "Return Agent Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Input Error": {
+      "main": [
+        [
+          {
+            "node": "Return Input Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "be192e9a-b685-4301-8994-d7ad964f5afb",
+  "meta": {
+    "instanceId": "ab8e7222768935bc978e1ed94122564aafc0ab02acd406cee02687493be1c97a"
+  },
+  "nodeGroups": [],
+  "id": "3tGKCZJhNVijpHEW",
+  "tags": []
+}

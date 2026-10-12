@@ -1,7 +1,7 @@
 import { motion, useReducedMotion } from 'framer-motion'
 import { useLanguage } from './data/LanguageContext.jsx'
 import { translations } from './data/translation.js'
-import cafeBackdrop from './assets/cafe-5.png'
+import cafeBackdrop from './assets/cafe-5.webp'
 
 function Contact() {
   const { language } = useLanguage()
@@ -37,6 +37,8 @@ function Contact() {
         src={cafeBackdrop}
         alt=""
         aria-hidden="true"
+        loading="lazy"
+        decoding="async"
         initial={reducedMotion ? false : { scale: 1.04, y: 10 }}
         whileInView={reducedMotion ? undefined : { scale: 1, y: 0 }}
         viewport={{ once: true, amount: 0.1 }}
@@ -58,13 +60,13 @@ function Contact() {
               </span>
             </div>
 
-            <span className="text-[9px] uppercase tracking-[0.3em] text-cream/35">
+            <span className="text-[9px] uppercase tracking-[0.3em] text-cream/60">
               {t.take}
             </span>
           </motion.div>
 
           <motion.div {...reveal(42, 0.08)} className="mt-16 max-w-5xl sm:mt-24">
-            <p className="text-xs uppercase tracking-[0.35em] text-cream/45">
+            <p className="text-xs uppercase tracking-[0.35em] text-cream/70">
               {t.label}
             </p>
 
@@ -74,7 +76,7 @@ function Contact() {
               <span className="text-caramel">{t.titleAccent}</span>
             </h2>
 
-            <p className="mt-10 max-w-xl text-sm leading-8 text-cream/60 sm:text-base">
+            <p className="mt-10 max-w-xl text-sm leading-8 text-cream/75 sm:text-base">
               {t.description}
             </p>
           </motion.div>
@@ -115,14 +117,14 @@ function Contact() {
               <p className="mt-3 font-display text-2xl text-cream sm:text-3xl">{t.everyDay}</p>
             </div>
             <div className="flex items-end gap-5 sm:gap-8">
-              <div><p className="text-[9px] uppercase tracking-[0.2em] text-cream/45">{t.opens}</p><p className="mt-1 font-display text-3xl text-cream sm:text-4xl">07:30</p></div>
+              <div><p className="text-[9px] uppercase tracking-[0.2em] text-cream/70">{t.opens}</p><p className="mt-1 font-display text-3xl text-cream sm:text-4xl">07:30</p></div>
               <span className="mb-2 h-px w-8 bg-caramel/60" aria-hidden="true" />
-              <div><p className="text-[9px] uppercase tracking-[0.2em] text-cream/45">{t.closes}</p><p className="mt-1 font-display text-3xl text-cream sm:text-4xl">00:00</p></div>
+              <div><p className="text-[9px] uppercase tracking-[0.2em] text-cream/70">{t.closes}</p><p className="mt-1 font-display text-3xl text-cream sm:text-4xl">00:00</p></div>
             </div>
           </motion.div>
 
           <motion.div {...reveal(24, 0.48)} className="relative mt-24 border-t border-cream/10 pt-8 sm:mt-32">
-            <div className="mb-5 flex items-center justify-between text-[9px] uppercase tracking-[0.3em] text-cream/30">
+            <div className="mb-5 flex items-center justify-between text-[9px] uppercase tracking-[0.3em] text-cream/55">
               <span>{t.scene}</span>
               <span>{t.city}</span>
             </div>
@@ -155,7 +157,7 @@ function Contact() {
               <p className="text-[9px] uppercase tracking-[0.3em] text-caramel">
                 {t.navigation}
               </p>
-              <p className="text-[9px] uppercase tracking-[0.3em] text-cream/30">
+              <p className="text-[9px] uppercase tracking-[0.3em] text-cream/55">
                 {t.take} · {t.city}
               </p>
             </div>
@@ -166,7 +168,7 @@ function Contact() {
                   <a
                     key={key}
                     href={href}
-                    className="group relative py-2 text-[10px] uppercase tracking-[0.24em] text-cream/55 transition-colors hover:text-caramel focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-caramel"
+                    className="group relative py-2 text-[10px] uppercase tracking-[0.24em] text-cream/75 transition-colors hover:text-caramel focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-caramel"
                   >
                     {nav[key]}
                     <span className="absolute bottom-0 left-0 h-px w-0 bg-caramel transition-all duration-500 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:w-full" />
@@ -194,7 +196,7 @@ function Contact() {
       </section>
 
       <div className="relative z-10 border-t border-cream/10 px-6 py-6 lg:px-10">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 text-[9px] uppercase tracking-[0.25em] text-cream/35 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 text-[9px] uppercase tracking-[0.25em] text-cream/60 sm:flex-row sm:items-center sm:justify-between sm:gap-6">
           <span>{t.signature} · {t.signatureSubline}</span>
           <span>{t.rights}</span>
         </div>

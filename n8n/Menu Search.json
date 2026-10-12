@@ -1,0 +1,86 @@
+{
+  "name": "Menu Search",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "menu_items",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "item_name",
+              "condition": "ilike",
+              "keyValue": "={{ '*' + $json.query + '*' }}"
+            },
+            {
+              "keyName": "category",
+              "condition": "ilike",
+              "keyValue": "={{ '*' + $json.query + '*' }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        448,
+        0
+      ],
+      "id": "87daeabd-a79a-412a-a358-9d15068cded7",
+      "name": "Get many rows",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "1QoKV73noE08hd8r",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "query"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        176,
+        0
+      ],
+      "id": "7b52ea9b-819c-4b60-8be4-906ed24bcaad",
+      "name": "When Executed by Another Workflow"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Get many rows",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "7e2ff774-16ba-48af-858e-af734c181366",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ab8e7222768935bc978e1ed94122564aafc0ab02acd406cee02687493be1c97a"
+  },
+  "nodeGroups": [],
+  "id": "FbRHA8e0k4gWcLoV",
+  "tags": []
+}

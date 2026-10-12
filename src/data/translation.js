@@ -98,7 +98,10 @@ export const translations = {
       successTitle: 'Reservation received.',
       successDescription: 'We will contact you to confirm your table.',
       invalidGuests: 'Please choose a valid number of guests.',
-      error: 'We could not submit your reservation. Please try again.',
+      error: 'We could not submit your reservation. Please try again or call us at',
+      everyDay: 'Open every day',
+      phoneHint: 'Please enter a valid phone number.',
+      timeHint: 'We take reservations between 07:30 and 23:30.',
     },
     contact: {
       label: 'Final Scene',
@@ -252,10 +255,10 @@ export const translations = {
     },
     gallery: {
       label: 'La Galerie',
-      title: 'UN CŒUR DANS LA VIE.',
-      titleAccent: 'UNE SCÈNE DE VIE.',
+      title: 'UN REGARD À L’INTÉRIEUR.',
+      titleAccent: 'LA SCÈNE.',
       description:
-        'Des images qui racontent l’histoire de Tarantino, des moments qui restent dans la mémoire et des souvenirs qui se conservent dans le temps.',
+        'Des lumières chaleureuses, des détails de cinéma et les petits moments qui font l’âme du Tarantino.',
       close: 'Fermer',
       view: "Voir l'image",
       previous: 'Image précédente',
@@ -268,10 +271,10 @@ export const translations = {
       title: 'BONS MOMENTS.',
       titleAccent: 'GRANDES SCÈNES.',
       description:
-        'De la première tasse de café du matin aux soirées détendues avec des amis, Tarantino est conçu pour les moments qui méritent d’être vécus.',
+        'Du premier café du matin aux soirées entre amis, Tarantino est fait pour les moments où l’on a envie de rester.',
       atmosphere: 'Atmosphère',
       coffee: 'Café',
-      food: 'Nourriture',
+      food: 'Cuisine',
       moments: 'Moments',
       scene: 'Scène 04 · L’Expérience',
     },
@@ -296,7 +299,10 @@ export const translations = {
       successTitle: 'Réservation reçue.',
       successDescription: 'Nous vous contacterons pour confirmer votre table.',
       invalidGuests: 'Veuillez choisir un nombre de personnes valide.',
-      error: 'Votre réservation n’a pas pu être envoyée. Veuillez réessayer.',
+      error: 'Votre réservation n’a pas pu être envoyée. Veuillez réessayer ou appelez-nous au',
+      everyDay: 'Ouvert tous les jours',
+      phoneHint: 'Veuillez saisir un numéro de téléphone valide.',
+      timeHint: 'Nous prenons les réservations entre 07h30 et 23h30.',
     },
     contact: {
       label: 'Scène finale',
@@ -331,10 +337,10 @@ export const translations = {
     },
     events: {
         label: "À l'affiche",
-        title: 'LA PROCHAINE',  
+        title: 'LA PROCHAINE',
         titleAccent: 'SCÈNE.',
         description:
-            'Moments spéciaux, rassemblements et expériences au Tarantino Ciné Café.',  
+            'Moments spéciaux, soirées et expériences au Tarantino Ciné Café.',
         recurring: 'Chaque jeudi',
         reserve: 'Réserver une table',
         take: 'Prise 01',

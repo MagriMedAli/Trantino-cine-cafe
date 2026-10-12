@@ -3,7 +3,16 @@ import { motion, useReducedMotion } from 'framer-motion'
 import { supabase } from './lib/supabase.js'
 import { useLanguage } from './data/LanguageContext.jsx'
 import { translations } from './data/translation.js'
-import reservedImage from './assets/reserved.png'
+import reservedImage from './assets/reserved.webp'
+
+const PHONE = '+216 58 787 728'
+
+function todayISO() {
+  const date = new Date()
+  return [date.getFullYear(), date.getMonth() + 1, date.getDate()]
+    .map((part, index) => (index === 0 ? part : String(part).padStart(2, '0')))
+    .join('-')
+}
 
 function Reservation() {
   const { language } = useLanguage()
@@ -26,10 +35,15 @@ function Reservation() {
 
     const formData = new FormData(form)
     const people = formData.get('people')
-    const guests = people === '8+' ? 8 : Number(people)
+    const guests = Number(people)
 
     if (!Number.isFinite(guests) || guests <= 0) {
       setError(t.invalidGuests)
+      return
+    }
+
+    if (!supabase) {
+      setError(t.error)
       return
     }
 
@@ -37,12 +51,12 @@ function Reservation() {
 
     try {
       const { error: insertError } = await supabase.from('reservations').insert({
-        name: formData.get('name'),
-        phone: formData.get('phone'),
+        name: formData.get('name').trim(),
+        phone: formData.get('phone').trim(),
         reservation_date: formData.get('date'),
         reservation_time: formData.get('time'),
         guests,
-        message: formData.get('message'),
+        message: formData.get('message')?.trim() || null,
         source: 'website',
       })
 
@@ -78,6 +92,8 @@ function Reservation() {
             src={reservedImage}
             alt=""
             aria-hidden="true"
+            loading="lazy"
+            decoding="async"
             initial={
               reducedMotion
                 ? false
@@ -102,7 +118,10 @@ function Reservation() {
               </span>
             </div>
             <p className="mt-4 font-display text-4xl leading-none text-cream sm:text-5xl">
-              {t.title}
+              07:30 — 00:00
+            </p>
+            <p className="mt-3 text-[10px] uppercase tracking-[0.3em] text-cream/75">
+              {t.everyDay}
             </p>
           </div>
         </motion.div>
@@ -123,7 +142,7 @@ function Reservation() {
               </span>
             </div>
 
-            <p className="text-xs uppercase tracking-[0.3em] text-cream/40">
+            <p className="text-xs uppercase tracking-[0.3em] text-cream/65">
               {t.label}
             </p>
 
@@ -158,7 +177,7 @@ function Reservation() {
               <div>
                 <label
                   htmlFor="name"
-                  className="mb-3 block text-[9px] uppercase tracking-[0.25em] text-cream/40"
+                  className="mb-3 block text-[9px] uppercase tracking-[0.25em] text-cream/65"
                 >
                   {t.name}
                 </label>
@@ -168,7 +187,10 @@ function Reservation() {
                   name="name"
                   type="text"
                   required
-                  className="w-full border-b border-cream/15 bg-transparent px-0 py-3 text-sm text-cream outline-none transition-colors placeholder:text-cream/20 focus:border-caramel"
+                  minLength={2}
+                  maxLength={80}
+                  autoComplete="name"
+                  className="w-full border-b border-cream/15 bg-transparent px-0 py-3 text-sm text-cream outline-none transition-colors placeholder:text-cream/35 focus:border-caramel"
                 />
               </div>
 
@@ -176,7 +198,7 @@ function Reservation() {
               <div>
                 <label
                   htmlFor="phone"
-                  className="mb-3 block text-[9px] uppercase tracking-[0.25em] text-cream/40"
+                  className="mb-3 block text-[9px] uppercase tracking-[0.25em] text-cream/65"
                 >
                   {t.phone}
                 </label>
@@ -186,7 +208,11 @@ function Reservation() {
                   name="phone"
                   type="tel"
                   required
-                  className="w-full border-b border-cream/15 bg-transparent px-0 py-3 text-sm text-cream outline-none transition-colors placeholder:text-cream/20 focus:border-caramel"
+                  inputMode="tel"
+                  autoComplete="tel"
+                  pattern="[0-9+ ]{8,20}"
+                  title={t.phoneHint}
+                  className="w-full border-b border-cream/15 bg-transparent px-0 py-3 text-sm text-cream outline-none transition-colors placeholder:text-cream/35 focus:border-caramel"
                 />
               </div>
 
@@ -194,7 +220,7 @@ function Reservation() {
               <div>
                 <label
                   htmlFor="date"
-                  className="mb-3 block text-[9px] uppercase tracking-[0.25em] text-cream/40"
+                  className="mb-3 block text-[9px] uppercase tracking-[0.25em] text-cream/65"
                 >
                   {t.date}
                 </label>
@@ -204,6 +230,7 @@ function Reservation() {
                   name="date"
                   type="date"
                   required
+                  min={todayISO()}
                   className="w-full border-b border-cream/15 bg-transparent px-0 py-3 text-sm text-cream outline-none transition-colors focus:border-caramel"
                 />
               </div>
@@ -212,7 +239,7 @@ function Reservation() {
               <div>
                 <label
                   htmlFor="time"
-                  className="mb-3 block text-[9px] uppercase tracking-[0.25em] text-cream/40"
+                  className="mb-3 block text-[9px] uppercase tracking-[0.25em] text-cream/65"
                 >
                   {t.time}
                 </label>
@@ -222,6 +249,9 @@ function Reservation() {
                   name="time"
                   type="time"
                   required
+                  min="07:30"
+                  max="23:30"
+                  title={t.timeHint}
                   className="w-full border-b border-cream/15 bg-transparent px-0 py-3 text-sm text-cream outline-none transition-colors focus:border-caramel"
                 />
               </div>
@@ -230,7 +260,7 @@ function Reservation() {
               <div>
                 <label
                   htmlFor="people"
-                  className="mb-3 block text-[9px] uppercase tracking-[0.25em] text-cream/40"
+                  className="mb-3 block text-[9px] uppercase tracking-[0.25em] text-cream/65"
                 >
                   {t.people}
                 </label>
@@ -272,7 +302,7 @@ function Reservation() {
               <div>
                 <label
                   htmlFor="message"
-                  className="mb-3 block text-[9px] uppercase tracking-[0.25em] text-cream/40"
+                  className="mb-3 block text-[9px] uppercase tracking-[0.25em] text-cream/65"
                 >
                   {t.message}
                 </label>
@@ -281,21 +311,22 @@ function Reservation() {
                   id="message"
                   name="message"
                   type="text"
+                  maxLength={300}
                   placeholder={t.messagePlaceholder}
-                  className="w-full border-b border-cream/15 bg-transparent px-0 py-3 text-sm text-cream outline-none transition-colors placeholder:text-cream/20 focus:border-caramel"
+                  className="w-full border-b border-cream/15 bg-transparent px-0 py-3 text-sm text-cream outline-none transition-colors placeholder:text-cream/35 focus:border-caramel"
                 />
               </div>
 
               {/* Submit */}
               <div className="md:col-span-2 flex flex-col gap-5 border-t border-cream/10 pt-8 sm:flex-row sm:items-center sm:justify-between">
-                <p className="max-w-sm text-[10px] leading-5 text-cream/35">
+                <p className="max-w-sm text-[10px] leading-5 text-cream/60">
                   {t.note}
                 </p>
 
                 <button
                   type="submit"
                   disabled={loading}
-                  className="group inline-flex shrink-0 items-center justify-center gap-4 bg-caramel px-7 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-espresso transition-all duration-300 hover:-translate-y-1 hover:bg-amber"
+                  className="group inline-flex shrink-0 items-center justify-center gap-4 bg-caramel px-7 py-4 text-xs font-semibold uppercase tracking-[0.18em] text-espresso transition-all duration-300 hover:-translate-y-1 hover:bg-amber focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-caramel disabled:cursor-wait disabled:opacity-60 disabled:hover:translate-y-0"
                 >
                   {loading ? t.loading : t.submit}
 
@@ -306,8 +337,11 @@ function Reservation() {
               </div>
 
               {error && (
-                <p role="alert" className="text-xs text-red-300 md:col-span-2">
-                  {error}
+                <p role="alert" className="text-sm leading-6 text-red-300 md:col-span-2">
+                  {error}{' '}
+                  <a href={`tel:${PHONE.replaceAll(' ', '')}`} className="whitespace-nowrap text-cream underline underline-offset-4 hover:text-caramel">
+                    {PHONE}
+                  </a>
                 </p>
               )}
             </form>
@@ -325,7 +359,7 @@ function Reservation() {
                 {t.successTitle}
               </h3>
 
-              <p className="mt-4 max-w-md text-sm leading-7 text-cream/50">
+              <p className="mt-4 max-w-md text-sm leading-7 text-cream/70">
                 {t.successDescription}
               </p>
             </motion.div>

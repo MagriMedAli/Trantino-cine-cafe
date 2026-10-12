@@ -5,10 +5,11 @@ const supabasePublishableKey =
   import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY
 
 if (!supabaseUrl || !supabasePublishableKey) {
-  throw new Error('Missing Supabase environment variables')
+  // Don't crash the whole site: reservations fall back to "call us".
+  console.error('Missing Supabase environment variables')
 }
 
-export const supabase = createClient(
-  supabaseUrl,
-  supabasePublishableKey
-)
+export const supabase =
+  supabaseUrl && supabasePublishableKey
+    ? createClient(supabaseUrl, supabasePublishableKey)
+    : null

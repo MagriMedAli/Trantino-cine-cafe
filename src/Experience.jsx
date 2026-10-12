@@ -3,10 +3,10 @@ import { motion } from 'framer-motion'
 import { useLanguage } from './data/LanguageContext.jsx'
 import { translations } from './data/translation.js'
 
-import cafe1 from './assets/cafe-1.png'
-import cafe2 from './assets/cafe-2.png'
-import cafe3 from './assets/cafe-4.png'
-import cafe4 from './assets/cafe-3.png'
+import cafe1 from './assets/cafe-3.webp'
+import cafe2 from './assets/cafe-4.webp'
+import cafe3 from './assets/cafe-5.webp'
+import cafe4 from './assets/hero.webp'
 
 function Experience() {
   const { language } = useLanguage()
@@ -51,6 +51,8 @@ function Experience() {
             <img
               src={cafe1}
               alt="Tarantino Ciné Café interior"
+              loading="lazy"
+              decoding="async"
               className="h-[580px] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03] lg:h-[720px]"
             />
 
@@ -93,28 +95,28 @@ function Experience() {
                 <span className="text-caramel">{t.titleAccent}</span>
               </h2>
 
-              <p className="mt-7 max-w-md text-sm leading-7 text-cream/60">
+              <p className="mt-7 max-w-md text-sm leading-7 text-cream/75">
                 {t.description}
               </p>
 
               <div className="mt-8 grid grid-cols-3 border-t border-cream/10 pt-6">
                 <div>
                   <p className="font-display text-xl text-cream">01</p>
-                  <p className="mt-1 text-[8px] uppercase tracking-[0.2em] text-cream/40">
+                  <p className="mt-1 text-[8px] uppercase tracking-[0.2em] text-cream/65">
                     {t.coffee}
                   </p>
                 </div>
 
                 <div>
                   <p className="font-display text-xl text-cream">02</p>
-                  <p className="mt-1 text-[8px] uppercase tracking-[0.2em] text-cream/40">
+                  <p className="mt-1 text-[8px] uppercase tracking-[0.2em] text-cream/65">
                     {t.food}
                   </p>
                 </div>
 
                 <div>
                   <p className="font-display text-xl text-cream">03</p>
-                  <p className="mt-1 text-[8px] uppercase tracking-[0.2em] text-cream/40">
+                  <p className="mt-1 text-[8px] uppercase tracking-[0.2em] text-cream/65">
                     {t.moments}
                   </p>
                 </div>
@@ -147,6 +149,8 @@ function Experience() {
                 <img
                   src={image}
                   alt="Tarantino Ciné Café interior"
+              loading="lazy"
+              decoding="async"
                   className="h-[320px] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03] md:h-[420px]"
                 />
 

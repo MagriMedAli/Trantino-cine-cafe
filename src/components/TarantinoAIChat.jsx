@@ -3,15 +3,40 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useLanguage } from '../data/LanguageContext.jsx'
 import { translations } from '../data/translation.js'
 
+const configuredWebhookUrl = import.meta.env.VITE_TARANTINO_AI_WEBHOOK_URL
+const isLocalWebhook = /^https?:\/\/(localhost|127\.0\.0\.1)\b/.test(configuredWebhookUrl || '')
+
+// In development the local n8n webhook is used. On the live site a localhost
+// URL can't be reached, so fall back to the Netlify function (netlify/functions/chat.mjs).
+const webhookUrl =
+  configuredWebhookUrl && (import.meta.env.DEV || !isLocalWebhook)
+    ? configuredWebhookUrl
+    : '/.netlify/functions/chat'
+
 function createSessionId() {
-  const storedSessionId = localStorage.getItem('tarantino-ai-session-id')
-  if (storedSessionId) return storedSessionId
+  try {
+    const storedSessionId = localStorage.getItem('tarantino-ai-session-id')
+    if (storedSessionId) return storedSessionId
+  } catch {
+    // Storage can be blocked (private mode); a fresh id is fine.
+  }
 
   const sessionId = crypto.randomUUID
     ? crypto.randomUUID()
     : `tarantino-${Date.now()}-${Math.random().toString(36).slice(2)}`
-  localStorage.setItem('tarantino-ai-session-id', sessionId)
+  try {
+    localStorage.setItem('tarantino-ai-session-id', sessionId)
+  } catch {
+    // Ignore storage failures.
+  }
   return sessionId
+}
+
+// The model sometimes answers with **bold** markdown; show it as bold text.
+function renderText(text) {
+  return text.split(/\*\*(.+?)\*\*/g).map((part, index) =>
+    index % 2 === 1 ? <strong key={index} className="font-semibold">{part}</strong> : part,
+  )
 }
 
 function TypingIndicator({ label }) {
@@ -35,7 +60,6 @@ function TypingIndicator({ label }) {
 function TarantinoAIChat() {
   const { language } = useLanguage()
   const copy = translations[language].aiChat
-  const webhookUrl = import.meta.env.VITE_TARANTINO_AI_WEBHOOK_URL
   const sessionId = useRef(null)
   const [isOpen, setIsOpen] = useState(false)
   const [draft, setDraft] = useState('')
@@ -53,11 +77,6 @@ function TarantinoAIChat() {
   const sendMessage = async () => {
     const message = draft.trim()
     if (!message || loading) return
-
-    if (!webhookUrl) {
-      setError(copy.unavailable)
-      return
-    }
 
     if (!sessionId.current) sessionId.current = createSessionId()
 
@@ -122,7 +141,7 @@ function TarantinoAIChat() {
                 <span className="mt-1 flex h-8 w-8 items-center justify-center rounded-full border border-caramel/50 text-sm text-caramel" aria-hidden="true">✦</span>
                 <div>
                   <p className="font-display text-xl leading-none">{copy.title}</p>
-                  <p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-cream/40">{copy.subtitle}</p>
+                  <p className="mt-1 text-[10px] uppercase tracking-[0.2em] text-cream/60">{copy.subtitle}</p>
                 </div>
               </div>
               <button type="button" onClick={() => setIsOpen(false)} className="rounded-full p-2 text-xl leading-none text-cream/55 transition-colors hover:bg-cream/10 hover:text-cream focus-visible:outline focus-visible:outline-2 focus-visible:outline-caramel" aria-label={copy.close}>×</button>
@@ -132,7 +151,7 @@ function TarantinoAIChat() {
               {messages.map((message) => (
                 <div key={message.id} className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <p className={`max-w-[85%] whitespace-pre-wrap rounded-2xl px-4 py-3 text-sm leading-6 ${message.role === 'user' ? 'rounded-br-sm bg-caramel text-espresso' : 'rounded-bl-sm border border-cream/10 bg-roasted-coffee/70 text-cream/85'}`}>
-                    {message.text}
+                    {renderText(message.text)}
                   </p>
                 </div>
               ))}
@@ -143,19 +162,19 @@ function TarantinoAIChat() {
             <div className="border-t border-cream/10 bg-dark-coffee/60 p-4">
               <div className="flex items-end gap-2 rounded-xl border border-cream/15 bg-espresso px-3 py-2 focus-within:border-caramel">
                 <label htmlFor="tarantino-ai-message" className="sr-only">{copy.inputLabel}</label>
-                <textarea id="tarantino-ai-message" rows="1" value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={handleKeyDown} placeholder={copy.placeholder} disabled={loading} className="max-h-28 min-h-10 flex-1 resize-none bg-transparent py-2 text-sm leading-6 text-cream outline-none placeholder:text-cream/30 disabled:cursor-wait" />
+                <textarea id="tarantino-ai-message" rows="1" value={draft} onChange={(event) => setDraft(event.target.value)} onKeyDown={handleKeyDown} placeholder={copy.placeholder} disabled={loading} className="max-h-28 min-h-10 flex-1 resize-none bg-transparent py-2 text-sm leading-6 text-cream outline-none placeholder:text-cream/45 disabled:cursor-wait" />
                 <button type="button" onClick={sendMessage} disabled={loading || !draft.trim()} className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-caramel text-lg text-espresso transition-colors hover:bg-amber focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-caramel disabled:cursor-not-allowed disabled:opacity-40" aria-label={loading ? copy.typing : copy.send}>{loading ? '…' : '↑'}</button>
               </div>
-              <p className="mt-2 text-center text-[9px] uppercase tracking-[0.14em] text-cream/25">{copy.hint}</p>
+              <p className="mt-2 text-center text-[9px] uppercase tracking-[0.14em] text-cream/50">{copy.hint}</p>
             </div>
           </motion.section>
         )}
       </AnimatePresence>
 
       {!isOpen && (
-        <motion.button type="button" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} whileHover={{ y: -3 }} whileTap={{ scale: 0.96 }} onClick={openChat} className="flex items-center gap-3 rounded-full border border-caramel/60 bg-espresso px-4 py-3 text-xs font-semibold uppercase tracking-[0.12em] text-cream shadow-xl transition-colors hover:border-caramel hover:bg-dark-coffee focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-caramel" aria-label={copy.open}>
+        <motion.button type="button" initial={{ opacity: 0, scale: 0.85 }} animate={{ opacity: 1, scale: 1 }} whileHover={{ y: -3 }} whileTap={{ scale: 0.96 }} onClick={openChat} className="flex items-center gap-3 rounded-full border border-caramel/60 bg-espresso p-2.5 text-xs sm:px-4 sm:py-3 font-semibold uppercase tracking-[0.12em] text-cream shadow-xl transition-colors hover:border-caramel hover:bg-dark-coffee focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-caramel" aria-label={copy.open}>
           <span className="flex h-7 w-7 items-center justify-center rounded-full bg-caramel text-sm text-espresso" aria-hidden="true">✦</span>
-          <span>{copy.open}</span>
+          <span className="hidden sm:inline">{copy.open}</span>
         </motion.button>
       )}
     </div>

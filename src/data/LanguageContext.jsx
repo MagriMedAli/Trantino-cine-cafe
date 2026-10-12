@@ -4,11 +4,23 @@ const LanguageContext = createContext(null)
 
 export function LanguageProvider({ children }) {
   const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('tarantino-language') || 'en'
+    try {
+      const stored = localStorage.getItem('tarantino-language')
+      if (stored === 'en' || stored === 'fr') return stored
+    } catch {
+      // Storage can be blocked; fall back to the browser language.
+    }
+    const browserLanguage = (navigator.language || '').toLowerCase()
+    return browserLanguage.startsWith('fr') || browserLanguage.startsWith('ar') ? 'fr' : 'en'
   })
 
   useEffect(() => {
-    localStorage.setItem('tarantino-language', language)
+    document.documentElement.lang = language
+    try {
+      localStorage.setItem('tarantino-language', language)
+    } catch {
+      // Ignore storage failures.
+    }
   }, [language])
 
   const toggleLanguage = () => {

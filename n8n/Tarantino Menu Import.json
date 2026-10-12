@@ -1,0 +1,143 @@
+{
+  "name": "Tarantino Menu Import",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "589a100d-1738-4523-88e6-e6877f4e8b5e",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "fileSelector": "/data/knowledge/tarantino/tarantino_menu_prices_extracted.md",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "59d4a6b4-276b-4992-a5e9-4ee07e34c7d4",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "jsCode": "// n8n Code node\n// Mode: Run Once for All Items\n\nconst output = []\n\nfor (let i = 0; i < $input.all().length; i++) {\n  const item = $input.all()[i]\n\n  // Read Markdown from the binary property produced by\n  // \"Read/Write Files from Disk\"\n  const buffer = await this.helpers.getBinaryDataBuffer(i, 'data')\n  const markdown = buffer.toString('utf8')\n\n  const lines = markdown.split(/\\r?\\n/)\n\n  let currentCategory = null\n  let insideTable = false\n\n  for (const rawLine of lines) {\n    const line = rawLine.trim()\n\n    // Stop before the RAG notes at the end of the source file\n    if (/^##\\s+RAG ingestion notes/i.test(line)) {\n      break\n    }\n\n    // Detect category headings: ## Cafés, ## Burgers + formules, etc.\n    const headingMatch = line.match(/^##\\s+(.+)$/)\n\n    if (headingMatch) {\n      currentCategory = headingMatch[1].trim()\n      insideTable = false\n      continue\n    }\n\n    // We only care about categories that contain item/price tables\n    if (/^\\|\\s*Item\\s*\\|\\s*Price\\s*\\(TND\\)\\s*\\|/i.test(line)) {\n      insideTable = true\n      continue\n    }\n\n    // Skip markdown table separator\n    if (insideTable && /^\\|\\s*:?-+\\s*\\|\\s*:?-+\\s*\\|/.test(line)) {\n      continue\n    }\n\n    // End table when line is no longer a table row\n    if (insideTable && !line.startsWith('|')) {\n      insideTable = false\n      continue\n    }\n\n    if (!insideTable || !currentCategory) {\n      continue\n    }\n\n    // Parse:\n    // | Item Name | 12.500 |\n    const rowMatch = line.match(/^\\|\\s*(.*?)\\s*\\|\\s*([0-9]+(?:\\.[0-9]+)?)\\s*\\|/)\n\n    if (!rowMatch) {\n      continue\n    }\n\n    const itemName = rowMatch[1].trim()\n    const price = Number(rowMatch[2])\n\n    if (!itemName || Number.isNaN(price)) {\n      continue\n    }\n\n    output.push({\n      json: {\n        category: currentCategory,\n        item_name: itemName,\n        price_tnd: price,\n        description: null,\n        source_url:\n          'https://fr.restaurantguru.com/Tarantino-cine-cafe-Monastir/menu',\n        menu_photo_date: '2025-08-31',\n        freshness_status: 'historical_menu_photo',\n      },\n    })\n  }\n}\n\nreturn output"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        448,
+        0
+      ],
+      "id": "163e8774-e2be-4f2b-b09c-8d9e7e4c3fb0",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "tableId": "menu_items",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "category",
+              "fieldValue": "={{ $json.category }}"
+            },
+            {
+              "fieldId": "item_name",
+              "fieldValue": "={{ $json.item_name }}"
+            },
+            {
+              "fieldId": "price_tnd",
+              "fieldValue": "={{ $json.price_tnd }}"
+            },
+            {
+              "fieldId": "description",
+              "fieldValue": "={{ $json.description }}"
+            },
+            {
+              "fieldId": "source_url",
+              "fieldValue": "={{ $json.source_url }}"
+            },
+            {
+              "fieldId": "menu_photo_date",
+              "fieldValue": "={{ $json.menu_photo_date }}"
+            },
+            {
+              "fieldId": "freshness_status",
+              "fieldValue": "={{ $json.freshness_status }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        672,
+        0
+      ],
+      "id": "54d9a637-045e-419b-9380-b82e04eaefd9",
+      "name": "Create a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "1QoKV73noE08hd8r",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "3b043bba-2b8e-4e6a-9afe-6f1c40f4d483",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ab8e7222768935bc978e1ed94122564aafc0ab02acd406cee02687493be1c97a"
+  },
+  "nodeGroups": [],
+  "id": "FZzovdUo3ARNEeyG",
+  "tags": []
+}

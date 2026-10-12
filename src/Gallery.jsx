@@ -4,10 +4,10 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useLanguage } from './data/LanguageContext.jsx'
 import { translations } from './data/translation.js'
 
-import heroImage from './assets/hero.png'
-import cafe1 from './assets/cafe-1.png'
-import cafe2 from './assets/cafe-3.png'
-import cafe3 from './assets/cafe-4.png'
+import heroImage from './assets/hero.webp'
+import cafe1 from './assets/cafe-1.webp'
+import cafe2 from './assets/cafe-4.webp'
+import cafe3 from './assets/cafe-5.webp'
 
 const galleryImages = [
   {
@@ -96,7 +96,7 @@ function Gallery() {
             <span className="text-coffee">{t.titleAccent}</span>
           </h2>
 
-          <p className="mt-7 max-w-xl text-sm leading-8 text-dark-coffee/60 sm:text-base">
+          <p className="mt-7 max-w-xl text-sm leading-8 text-dark-coffee/80 sm:text-base">
             {t.description}
           </p>
         </motion.div>
@@ -117,6 +117,8 @@ function Gallery() {
             <img
               src={galleryImages[0].src}
               alt="Tarantino Ciné Café"
+              loading="lazy"
+              decoding="async"
               className="h-[520px] w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] lg:h-[680px]"
             />
 
@@ -155,6 +157,8 @@ function Gallery() {
                 <img
                   src={image.src}
                   alt="Tarantino Ciné Café"
+              loading="lazy"
+              decoding="async"
                   className="h-[250px] w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] lg:h-[330px]"
                 />
 
@@ -183,6 +187,8 @@ function Gallery() {
             <img
               src={galleryImages[3].src}
               alt="Tarantino Ciné Café"
+              loading="lazy"
+              decoding="async"
               className="h-[320px] w-full object-cover transition-transform duration-700 group-hover:scale-[1.04] md:h-[440px]"
             />
 
@@ -225,6 +231,8 @@ function Gallery() {
               <img
                 src={selectedImage.src}
                 alt="Tarantino Ciné Café"
+              loading="lazy"
+              decoding="async"
                 className="max-h-[78vh] w-auto max-w-full object-contain"
               />
 
@@ -251,7 +259,7 @@ function Gallery() {
               </div>
 
               <div className="mt-4 flex items-center justify-between">
-                <span className="text-[9px] uppercase tracking-[0.3em] text-cream/50">
+                <span className="text-[9px] uppercase tracking-[0.3em] text-cream/70">
                   {selectedImage.label} {t.imageOf} {galleryImages.length}
                 </span>
 
