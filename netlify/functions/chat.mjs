@@ -59,7 +59,11 @@ function json(body, status = 200) {
 
 function supabaseHeaders() {
   const key = env('SUPABASE_SERVICE_ROLE_KEY')
-  return { apikey: key, Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }
+  const headers = { apikey: key, 'Content-Type': 'application/json' }
+  // Legacy service_role keys are JWTs and go in Authorization too; the newer
+  // sb_secret_ keys are not JWTs and only belong in the apikey header.
+  if (key.startsWith('eyJ')) headers.Authorization = `Bearer ${key}`
+  return headers
 }
 
 async function menuSearch(query) {
